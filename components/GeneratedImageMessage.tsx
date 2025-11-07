@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ImageEditMessage as ImageEditMessageData } from '../types';
+import { GeneratedImageMessage as GeneratedImageMessageData } from '../types';
 
 const ModelIcon = () => (
     <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
@@ -10,35 +10,33 @@ const ModelIcon = () => (
     </div>
 );
 
-interface ImageEditMessageProps {
-  message: ImageEditMessageData;
+interface GeneratedImageMessageProps {
+  message: GeneratedImageMessageData;
 }
 
-const ImageEditMessage: React.FC<ImageEditMessageProps> = ({ message }) => {
+const GeneratedImageMessage: React.FC<GeneratedImageMessageProps> = ({ message }) => {
   return (
     <div className="flex items-start gap-4">
       <ModelIcon />
       <div className="max-w-[85%] md:max-w-[75%] w-full rounded-2xl p-4 bg-gray-700 rounded-bl-none">
         <p className="mb-3 text-gray-200 italic">"{message.prompt}"</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <h4 className="text-sm font-semibold mb-2 text-center text-gray-400">Original</h4>
-            <img src={message.sourceImageUrl} alt="Original image to be edited" className="rounded-lg w-full aspect-square object-cover" />
-          </div>
-          <div>
-            <h4 className="text-sm font-semibold mb-2 text-center text-gray-400">Result</h4>
-            {message.resultImageUrl ? (
-              <img src={message.resultImageUrl} alt="Edited image result" className="rounded-lg w-full aspect-square object-cover" />
-            ) : (
-              <div className="w-full aspect-square bg-gray-800 rounded-lg flex items-center justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {message.imageUrls.length > 0 ? (
+            message.imageUrls.map((url, index) => (
+              <img key={index} src={url} alt={`Generated image ${index + 1} for prompt: ${message.prompt}`} className="rounded-lg w-full aspect-square object-cover" />
+            ))
+          ) : (
+            // Loading state
+            Array.from({ length: 2 }).map((_, index) => (
+              <div key={index} className="w-full aspect-square bg-gray-800 rounded-lg flex items-center justify-center">
                 <div className="w-8 h-8 border-4 border-t-transparent border-blue-500 rounded-full animate-spin"></div>
               </div>
-            )}
-          </div>
+            ))
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default ImageEditMessage;
+export default GeneratedImageMessage;
